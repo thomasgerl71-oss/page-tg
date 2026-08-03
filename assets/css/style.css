@@ -128,11 +128,6 @@ p {
 .lede--quote {
   font-style: italic;
   font-size: calc(var(--step-1) - 2pt);
-  padding: 0.3em 0.65em;
-  background: rgba(30, 35, 76, 0.72);
-  border-radius: 999px;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
 }
 
 ul {
@@ -253,6 +248,12 @@ ul {
   min-height: 588px;
   display: flex;
   align-items: center;
+}
+
+@media (max-width: 720px) {
+  .page-hero--kontakt h1 {
+    white-space: normal;
+  }
 }
 
 .eyebrow {
@@ -521,7 +522,7 @@ body.snap-page {
 
 @media (max-width: 860px) {
   .book-section {
-    padding-block: calc(var(--space-lg) + 3.25rem) var(--space-lg);
+    padding-block: calc(var(--space-lg) + 8.5rem) var(--space-lg);
   }
 
   .book-section__grid {
@@ -687,7 +688,7 @@ body.snap-page {
   justify-content: flex-start;
   gap: var(--space-sm);
   padding: var(--space-md);
-  background: transparent;
+  background: rgba(8, 11, 28, 0.55);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   opacity: 0;
@@ -708,30 +709,10 @@ body.snap-page {
 
 .case-card .hero__quote {
   margin-bottom: 0;
-  color: #fff;
+  color: #e8dcc0;
   border-left: none;
   padding-left: 0;
   font-size: calc(var(--step-1) - 4px);
-}
-
-.case-card .hero__quote span {
-  padding: 0.3em 0.65em;
-  background: rgba(85, 85, 85, 0.45);
-  border-radius: 999px;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-}
-
-.case-board .case-card:nth-child(1) .hero__quote {
-  color: #f0c300;
-}
-
-.case-board .case-card:nth-child(2) .hero__quote {
-  color: #e8dcc0;
-}
-
-.case-board .case-card:nth-child(3) .hero__quote {
-  color: #28bc4e;
 }
 
 .case-card .btn--primary {
