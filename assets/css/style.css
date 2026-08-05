@@ -1185,6 +1185,89 @@ body.snap-page {
 }
 
 /* --------------------------------------------------------------------------
+   Termine
+   -------------------------------------------------------------------------- */
+
+/* Abstand zur Überschrift halbiert: section--tight liefert 5rem darunter,
+   diese Section normalerweise 8rem darüber (zusammen 13rem) — hier auf
+   6,5rem reduziert, indem nur der obere Teil verkleinert wird. */
+.termine-events {
+  padding-top: 1.5rem;
+}
+
+.termine-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.termine-item {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: var(--space-md);
+  align-items: baseline;
+  padding-block: var(--space-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.termine-item:last-child {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.termine-item__date {
+  font-family: var(--font-mono);
+  color: var(--color-accent-text);
+}
+
+.termine-item__day {
+  display: block;
+  font-size: var(--step-1);
+  letter-spacing: 0.02em;
+}
+
+.termine-item__time {
+  display: block;
+  margin-top: 0.2em;
+  font-size: var(--step--1);
+  color: var(--color-fg-muted);
+}
+
+.termine-item__body h2 {
+  font-size: var(--step-1);
+  margin-bottom: 0.2em;
+}
+
+.termine-item__location {
+  color: var(--color-fg-muted);
+  margin-bottom: 0.4em;
+}
+
+.termine-item__link {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-decoration: none;
+  color: var(--color-accent-text);
+  border-bottom: 1px solid transparent;
+  transition: border-color 150ms var(--ease);
+}
+
+.termine-item__link:hover {
+  border-color: var(--color-accent-text);
+}
+
+.termine-status {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--color-fg-muted);
+}
+
+@media (max-width: 620px) {
+  .termine-item {
+    grid-template-columns: 1fr;
+    gap: 0.3em;
+  }
+}
+
+/* --------------------------------------------------------------------------
    Legal-Seiten (Impressum / Datenschutz)
    -------------------------------------------------------------------------- */
 
