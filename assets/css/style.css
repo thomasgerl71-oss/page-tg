@@ -94,8 +94,8 @@
   --color-bg-elevated-2: #1e234c;
   --color-fg: #ece9fb;
   --color-fg-muted: #9c9fc4;
-  --color-accent: #3d46e8;
-  --color-accent-text: #3d46e8;
+  --color-accent: #7d7d87;
+  --color-accent-text: #7d7d87;
   --color-stamp: #ffd6e7;
   --color-border: rgba(236, 234, 251, 0.14);
   --color-border-strong: rgba(236, 234, 251, 0.28);
@@ -253,6 +253,11 @@ ul {
    Layout-Hilfen
    -------------------------------------------------------------------------- */
 
+main {
+  position: relative;
+  z-index: 1;
+}
+
 .wrap {
   max-width: var(--content-max);
   margin-inline: auto;
@@ -306,22 +311,15 @@ ul {
   z-index: 0;
 }
 
-.page-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--color-scrim);
-  z-index: 0;
-}
-
 .page-hero > .wrap {
   position: relative;
   z-index: 1;
 }
 
 .page-hero--kontakt::before {
-  background-image: url("../img/kontakt-hintergrund.jpg");
-  background-position: center calc(50% + 38px);
+  background-image: url("../img/kontakt-hintergrund.webp");
+  background-position: center;
+  background-size: contain;
 }
 
 .page-hero--kontakt h1 {
@@ -562,13 +560,6 @@ body.snap-page {
   scroll-snap-stop: always;
 }
 
-.book-section__scrim {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: var(--color-scrim);
-}
-
 .book-section .wrap {
   position: relative;
   z-index: 2;
@@ -672,7 +663,7 @@ body.snap-page {
 }
 
 .btn--primary:hover {
-  background: #2c33b0;
+  background: #63636b;
 }
 
 /* "Mädchen in der Grube" — Akzentfarbe des Covers (Gelb) */
@@ -1291,7 +1282,7 @@ body.snap-page {
 .site-footer {
   position: relative;
   z-index: 1;
-  background: var(--color-bg);
+  border-top: 1px solid var(--color-border);
   padding-block: var(--space-lg);
   color: var(--color-fg-muted);
   font-size: var(--step--1);
