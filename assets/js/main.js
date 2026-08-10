@@ -122,21 +122,13 @@
 
     if (snapSections.length > 1 && !prefersReducedMotion) {
       var AUTOPLAY_DELAY = 4000;
+      var AUTOPLAY_SCROLL_DURATION = 900;
       var autoplayTimer = null;
+      var activeAnimation = null;
+      var activeClone = null;
 
-      // Natives scrollTo({behavior:"smooth"}) statt eigener rAF-Animation:
-      // Der Browser bricht einen laufenden nativen Smooth-Scroll sofort ab,
-      // sobald der Nutzer selbst scrollt — eine eigene Animation würde die
-      // Scrollposition dagegen jeden Frame per Code überschreiben und mit
-      // manuellem Scrollen kollidieren (sichtbares Ruckeln/Bouncing).
-      var isAutoplayScroll = false;
-      var wrapClone = null;
-
-      var cleanupWrapClone = function () {
-        if (wrapClone) {
-          wrapClone.remove();
-          wrapClone = null;
-        }
+      var easeInOutCubic = function (t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       };
 
       // Für einen nahtlosen Loop von der letzten zur ersten Sektion wird Buch 1
@@ -144,46 +136,64 @@
       // und danach unsichtbar (instant) auf die echte Sektion 1 zurückgesprungen.
       // Der Klon existiert nur für die Dauer dieses einen Übergangs, damit er
       // beim normalen manuellen Scrollen nie auftaucht.
-      var jumpBackAfterWrap = function () {
-        if (!isAutoplayScroll) {
-          // Nutzer hat den Übergang unterbrochen — nur aufräumen, keine
-          // Scrollposition erzwingen.
-          cleanupWrapClone();
-          return;
-        }
-        isAutoplayScroll = false;
-        if (wrapClone) {
-          window.scrollTo({ top: snapSections[0].offsetTop, behavior: "instant" });
-          cleanupWrapClone();
-          currentSectionIndex = 0;
-          if (counters.length > 0) {
-            counters.forEach(function (el) {
-              el.textContent = "01";
-            });
+      var cleanupClone = function () {
+        if (activeClone) {
+          if (activeClone.parentNode) {
+            activeClone.parentNode.removeChild(activeClone);
           }
+          activeClone = null;
         }
       };
 
-      if ("onscrollend" in window) {
-        window.addEventListener("scrollend", jumpBackAfterWrap);
-      } else {
-        var scrollEndFallbackTimer = null;
-        window.addEventListener(
-          "scroll",
-          function () {
-            clearTimeout(scrollEndFallbackTimer);
-            scrollEndFallbackTimer = setTimeout(jumpBackAfterWrap, 150);
-          },
-          { passive: true }
-        );
-      }
+      // Eigene rAF-Animation mit Easing statt natives scrollTo({behavior:"smooth"}):
+      // Native Smooth-Scrolls starten/enden in den meisten Browsern abrupt statt
+      // sanft. behavior:"instant" pro Frame erzwingen, weil html global
+      // scroll-behavior: smooth gesetzt hat, das sonst jeden Frame zusätzlich
+      // selbst weich animieren und mit der eigenen Kurve hier kollidieren würde
+      // (sichtbares Ruckeln/"Schnappen" gegen Ende der Animation).
+      var animateScrollTo = function (targetY, duration, onComplete) {
+        if (activeAnimation) {
+          activeAnimation.cancelled = true;
+        }
+        var anim = { cancelled: false };
+        activeAnimation = anim;
+
+        var startY = window.pageYOffset;
+        var distance = targetY - startY;
+        var startTime = null;
+
+        var step = function (timestamp) {
+          if (anim.cancelled) {
+            return;
+          }
+          if (startTime === null) {
+            startTime = timestamp;
+          }
+          var progress = Math.min((timestamp - startTime) / duration, 1);
+          window.scrollTo({
+            top: startY + distance * easeInOutCubic(progress),
+            left: 0,
+            behavior: "instant",
+          });
+          if (progress < 1) {
+            window.requestAnimationFrame(step);
+          } else if (onComplete) {
+            onComplete();
+          }
+        };
+
+        window.requestAnimationFrame(step);
+      };
 
       var scheduleAutoplay = function () {
         clearTimeout(autoplayTimer);
         autoplayTimer = setTimeout(function () {
-          isAutoplayScroll = true;
-
-          if (currentSectionIndex === lastSectionIndex) {
+          if (currentSectionIndex !== lastSectionIndex) {
+            animateScrollTo(
+              snapSections[currentSectionIndex + 1].offsetTop,
+              AUTOPLAY_SCROLL_DURATION
+            );
+          } else {
             var clone = snapSections[0].cloneNode(true);
             clone.removeAttribute("id");
             clone.setAttribute("aria-hidden", "true");
@@ -195,12 +205,17 @@
               "afterend",
               clone
             );
-            wrapClone = clone;
-            window.scrollTo({ top: clone.offsetTop, behavior: "smooth" });
-          } else {
-            window.scrollTo({
-              top: snapSections[currentSectionIndex + 1].offsetTop,
-              behavior: "smooth",
+            activeClone = clone;
+
+            animateScrollTo(clone.offsetTop, AUTOPLAY_SCROLL_DURATION, function () {
+              window.scrollTo({ top: snapSections[0].offsetTop, behavior: "instant" });
+              cleanupClone();
+              currentSectionIndex = 0;
+              if (counters.length > 0) {
+                counters.forEach(function (el) {
+                  el.textContent = "01";
+                });
+              }
             });
           }
 
@@ -222,7 +237,17 @@
         if (event.type === "keydown" && navKeys.indexOf(event.key) === -1) {
           return;
         }
-        isAutoplayScroll = false;
+        // Eine laufende Klon-Übergangsanimation sofort sauber beenden, damit
+        // manuelles Scrollen niemals auf den (nur kurzzeitig existierenden)
+        // Klon treffen kann.
+        if (activeClone) {
+          if (activeAnimation) {
+            activeAnimation.cancelled = true;
+          }
+          window.scrollTo({ top: snapSections[0].offsetTop, behavior: "instant" });
+          cleanupClone();
+          currentSectionIndex = 0;
+        }
         scheduleAutoplay();
       };
 
