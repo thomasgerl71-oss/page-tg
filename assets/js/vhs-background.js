@@ -291,12 +291,26 @@
       }
     }
 
+    // Canvas startet unsichtbar (siehe .site-silk-bg in style.css) und blendet
+    // erst auf, nachdem der erste (deterministische, teils zu helle) Frame
+    // bereits gezeichnet wurde. Verhindert den kurzen Blitzer direkt beim
+    // Laden/Navigieren, ohne Scroll- oder Shader-Logik anzufassen.
+    function revealCanvas() {
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
+          canvas.classList.add("is-ready");
+        });
+      });
+    }
+
     function start() {
       resize();
       if (prefersReducedMotion) {
         render();
+        canvas.classList.add("is-ready");
       } else if (rafId === null) {
         rafId = window.requestAnimationFrame(render);
+        revealCanvas();
       }
     }
 

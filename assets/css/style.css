@@ -547,6 +547,18 @@ body.snap-page {
   height: 100vh;
   z-index: 0;
   background: var(--color-bg);
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.site-silk-bg.is-ready {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-silk-bg {
+    transition: none;
+  }
 }
 
 .book-section {
