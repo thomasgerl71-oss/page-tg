@@ -38,6 +38,19 @@
 
   var bookTitle = (listEl.getAttribute("data-book-title") || "").trim();
 
+  // Manche Titel haben mehrere Zeilen im Sheet (z. B. Buch- und Hörbuch-
+  // Ausgabe). data-require-column wählt unter gleichnamigen Zeilen die
+  // aus, in der diese Spalte befüllt ist (z. B. "EAN" fürs Hörbuch statt
+  // "ISBN" fürs Buch). data-exclude-columns blendet einzelne Spalten
+  // (kommagetrennt) unabhängig vom Sheet-Inhalt aus.
+  var requireColumn = (listEl.getAttribute("data-require-column") || "").trim();
+  var excludeColumns = (listEl.getAttribute("data-exclude-columns") || "")
+    .split(",")
+    .map(function (c) {
+      return c.trim().toLowerCase();
+    })
+    .filter(Boolean);
+
   function setStatus(message) {
     listEl.innerHTML = "";
     var p = document.createElement("p");
@@ -103,7 +116,7 @@
     return title.trim().toLowerCase();
   }
 
-  function findBookEntry(rows, title) {
+  function findBookEntry(rows, title, requireColumn, excludeColumns) {
     if (rows.length < 3) {
       return null;
     }
@@ -112,6 +125,11 @@
       return h.trim();
     });
     var target = normalizeTitle(title);
+    var requireIndex = requireColumn
+      ? headers.findIndex(function (h) {
+          return h.toLowerCase() === requireColumn.toLowerCase();
+        })
+      : -1;
 
     for (var i = 1; i < rows.length; i += 2) {
       var valuesRow = rows[i];
@@ -120,9 +138,15 @@
       if (normalizeTitle(valuesRow[0] || "") !== target) {
         continue;
       }
+      if (requireIndex !== -1 && (valuesRow[requireIndex + 1] || "").trim() === "") {
+        continue;
+      }
 
       var fields = [];
       for (var col = 0; col < headers.length; col++) {
+        if (excludeColumns.indexOf(headers[col].toLowerCase()) !== -1) {
+          continue;
+        }
         var value = (valuesRow[col + 1] || "").trim();
         if (value === "") {
           continue;
@@ -177,7 +201,7 @@
       return response.text();
     })
     .then(function (text) {
-      var fields = findBookEntry(parseCsv(text), bookTitle);
+      var fields = findBookEntry(parseCsv(text), bookTitle, requireColumn, excludeColumns);
       if (fields === null) {
         setStatus("Zusatzangaben konnten gerade nicht geladen werden. Bitte versuchen Sie es später erneut.");
         return;

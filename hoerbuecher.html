@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="color-scheme" content="dark">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Termine — Thomas Gerl</title>
-  <meta name="description" content="Alle Lesungen, Buchmessen und Veranstaltungen von Thomas Gerl im Überblick.">
+  <title>Hörbücher — Thomas Gerl</title>
+  <meta name="description" content="Die Hörbücher von Thomas Gerl im Überblick: Mädchen in der Grube.">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body class="page-termine">
+<body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
 
   <canvas class="site-silk-bg" data-vhs-background aria-hidden="true"></canvas>
@@ -33,9 +33,9 @@
         <ul id="primary-nav" class="primary-nav">
           <li><a href="index.html">Start</a></li>
           <li><a href="buecher.html">Bücher</a></li>
-          <li><a href="hoerbuecher.html">Hörbücher</a></li>
+          <li><a href="hoerbuecher.html" aria-current="page">Hörbücher</a></li>
           <li><a href="autor.html">Der Autor</a></li>
-          <li><a href="termine.html" aria-current="page">Termine</a></li>
+          <li><a href="termine.html">Termine</a></li>
           <li><a href="kontakt.html">Kontakt</a></li>
         </ul>
       </nav>
@@ -43,17 +43,25 @@
   </header>
 
   <main id="main">
-    <section class="section--tight">
-      <div class="wrap section-head">
-        <span class="eyebrow">Termine</span>
-        <h1 class="heading--light">Lesungen &amp; Veranstaltungen</h1>
+    <section class="section--tight buecher-lead">
+      <div class="wrap">
+        <div class="section-head">
+          <h1>Die Hörbücher</h1>
+        </div>
       </div>
     </section>
 
-    <section class="section termine-events">
+    <section class="buecher-cards">
       <div class="wrap">
-        <div id="termine-list" class="termine-list" aria-live="polite">
-          <p class="termine-status">Termine werden geladen …</p>
+        <div class="case-board">
+          <a class="case-card reveal" href="hoerbuch-maedchen-in-der-grube.html">
+            <img class="case-card__cover" src="assets/img/cover-hoerbuch-maedchen-in-der-grube.png" alt="Hörbuchcover „Mädchen in der Grube“" width="2752" height="1536">
+            <div class="case-card__overlay">
+              <h2 class="case-card__title">Mädchen in der Grube</h2>
+              <p class="hero__quote"><span>Sie wollten nur einen Ferienjob auf der Insel — und bekamen ein Monster, das ihr Leben für immer verändern würde.</span></p>
+              <span class="btn btn--primary">Mehr erfahren</span>
+            </div>
+          </a>
         </div>
       </div>
     </section>
@@ -73,6 +81,5 @@
 
   <script src="assets/js/main.js"></script>
   <script src="assets/js/vhs-background.js"></script>
-  <script src="assets/js/termine.js"></script>
 </body>
 </html>

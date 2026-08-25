@@ -396,8 +396,8 @@ body.snap-page .site-header {
 }
 
 .brand__logo {
-  height: clamp(5.2rem, 4.4rem + 2.8vw, 7.2rem);
-  width: auto;
+  width: clamp(14.6rem, 12.3rem + 7.8vw, 20.2rem);
+  height: auto;
 }
 
 .site-header__social {
